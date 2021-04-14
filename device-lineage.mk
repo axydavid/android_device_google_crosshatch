@@ -114,6 +114,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libprotobuf-cpp-full-vendorcompat
 
+# Radio
+PRODUCT_PACKAGES += \
+    CarrierConfigOverlay
+
 # Wi-Fi
 PRODUCT_PACKAGES += \
     libwifi-hal:64 \
