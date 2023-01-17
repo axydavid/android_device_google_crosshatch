@@ -60,4 +60,6 @@
     <!-- FPS measure interval in milliseconds, default 1000 -->
     <integer name="config_fpsReadInterval">1000</integer>
 
+    <!-- Burn-in protection -->
+    <dimen name="burnin_protection_horizontal_shift">1dp</dimen>
 </resources>
