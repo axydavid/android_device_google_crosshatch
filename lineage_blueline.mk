@@ -26,7 +26,7 @@ TARGET_FACE_UNLOCK_SUPPORTED := true
 
 # Gapps
 WITH_GMS := true
-$(call inherit-product, vendor/gapps/config.mk)
+$(call inherit-product, vendor/gms/products/gms.mk)
 
 PRODUCT_BUILD_PROP_OVERRIDES += \
     TARGET_PRODUCT=blueline \
