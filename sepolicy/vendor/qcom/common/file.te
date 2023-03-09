@@ -119,6 +119,9 @@ type rfs_tombstone_data_file, data_file_type, file_type;
 # used for /dsp files
 type adsprpcd_file, file_type, vendor_file_type;
 
+# FPS Info
+type sysfs_fps, sysfs_type, fs_type;
+
 # msm_irqbalance
 type proc_irq, fs_type, proc_type;
 type sysfs_irq, fs_type, sysfs_type;
