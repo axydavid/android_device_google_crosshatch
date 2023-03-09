@@ -57,5 +57,7 @@
     <!-- Burn-in protection -->
     <dimen name="burnin_protection_horizontal_shift">1dp</dimen>
 
+    <!-- FPSInfoService FPS node file path -->
+    <string name="config_fpsInfoSysNode" translatable="false">/sys/devices/virtual/graphics/fb0/measured_fps</string>
 </resources>
 
