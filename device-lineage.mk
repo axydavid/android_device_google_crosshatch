@@ -23,6 +23,14 @@ PRODUCT_VENDOR_PROPERTIES += \
     dalvik.vm.image-dex2oat-cpu-set=0,1,2,3,4,5,6,7 \
     dalvik.vm.image-dex2oat-threads=8
 
+# Dex
+PRODUCT_DEXPREOPT_SPEED_APPS += \
+    Launcher3QuickStep \
+    Settings \
+    SettingsGoogle \
+    SystemUI \
+    SystemUIGoogle
+
 # Elmyra
 PRODUCT_PACKAGES += \
     ElmyraService
