@@ -8,3 +8,6 @@ ro.hardware.vulkan=adreno
 
 # Perf
 ro.vendor.perf.scroll_opt=true
+
+# Lowmem
+ro.config.art_lowmem=true
