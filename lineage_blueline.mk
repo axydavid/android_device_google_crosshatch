@@ -21,6 +21,17 @@ PRODUCT_NAME := lineage_blueline
 TARGET_SCREEN_HEIGHT := 2160
 TARGET_SCREEN_WIDTH := 1080
 
+# Crdroid
+TARGET_BUILD_GRAPHENEOS_CAMERA := false
+TARGET_BOOT_ANIMATION_RES := 1080
+TARGET_SUPPORTS_QUICK_TAP := true
+TARGET_FACE_UNLOCK_SUPPORTED := true
+
+# Gapps
+WITH_GMS := true
+$(call inherit-product, vendor/gms/products/gms.mk)
+TARGET_SUPPORTS_PIXEL_DEP := true
+
 PRODUCT_BUILD_PROP_OVERRIDES += \
     TARGET_PRODUCT=blueline \
     PRIVATE_BUILD_DESC="blueline-user 12 SP1A.210812.016.C2 8618562 release-keys"
