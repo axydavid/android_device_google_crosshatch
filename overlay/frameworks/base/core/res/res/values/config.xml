@@ -378,9 +378,6 @@
     <!-- If true, the display will be shifted around in ambient mode. -->
     <bool name="config_enableBurnInProtection">true</bool>
 
-    <!-- Whether the device supports Smart Pixels -->
-    <bool name="config_supportSmartPixels">true</bool>
-
     <!-- These are system packages exempted from privacy indicator -->
     <string-array name="config_indicatorExemptedPackageNames" translatable="false">
         <item>com.android.bluetooth</item>

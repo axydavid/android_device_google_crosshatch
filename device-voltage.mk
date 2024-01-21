@@ -5,7 +5,9 @@
 #
 
 # Overlays
-DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay-lineage
+DEVICE_PACKAGE_OVERLAYS += \
+    $(LOCAL_PATH)/overlay \
+    $(LOCAL_PATH)/overlay-voltage
 
 # AiAi Config
 PRODUCT_COPY_FILES += \
@@ -41,10 +43,6 @@ PRODUCT_COPY_FILES += \
 
 # Google Assistant
 PRODUCT_PRODUCT_PROPERTIES += ro.opa.eligible_device=true
-
-# LiveDisplay
-PRODUCT_PACKAGES += \
-    vendor.lineage.livedisplay@2.0-service-sdm
 
 # Init-fingerprint
 PRODUCT_COPY_FILES += \
