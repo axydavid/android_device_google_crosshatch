@@ -43,4 +43,19 @@
 
     <!-- Doze: whether the double tap sensor reports 2D touch coordinates -->
     <bool name="doze_double_tap_reports_touch_coordinates">true</bool>
+
+    <!-- On-The-Go -->
+    <integer name="quick_settings_onthego_dialog_short_timeout">3000</integer>
+    <integer name="quick_settings_onthego_dialog_long_timeout">6000</integer>
+
+    <!-- The CPU temperature sensor path, defaults to empty -->
+    <string name="config_cpuTempSensor" translatable="false">/sys/class/thermal/thermal_zone0/temp</string>
+
+    <!-- The CPUs to display in CPUInfoService view -->
+    <string name="config_displayCpus" translatable="false"></string>
+
+    <!-- Burn-in protection -->
+    <dimen name="burnin_protection_horizontal_shift">1dp</dimen>
+
 </resources>
+
