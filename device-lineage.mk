@@ -46,6 +46,10 @@ PRODUCT_PRODUCT_PROPERTIES += ro.opa.eligible_device=true
 PRODUCT_PACKAGES += \
     vendor.lineage.livedisplay@2.0-service-sdm
 
+# Init-fingerprint
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/init.fp.sh:$(TARGET_COPY_OUT_VENDOR)/bin/init.fp.sh \
+
 # Parts
 PRODUCT_PACKAGES += \
     GoogleParts

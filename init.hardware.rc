@@ -742,6 +742,15 @@ on property:ro.boot.hardware.sku=G013B
 on property:ro.boot.hardware.sku=G013D
     start vendor.secure_element_hal_service_1_1
 
+# Init-fingerprint
+service fpcpermission /vendor/bin/init.fp.sh
+    user root
+    group root
+    disabled
+
+on property:sys.boot_completed=1
+    start fpcpermission
+
 # charger driver exposes now finer grain control, map demo mode to those properties
 # demo mode can only be exit wipping data which will also reset the persist properties
 on property:sys.retaildemo.enabled=1

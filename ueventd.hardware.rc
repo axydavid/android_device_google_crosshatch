@@ -105,11 +105,6 @@ firmware_directories /vendor/firmware_mnt/image/
 # Citadel
 /dev/citadel0             0660    hsm         hsm
 
-# fpc fingerprint
-/sys/devices/platform/soc/soc:fp_fpc*        irq               0600  system system
-/sys/devices/platform/soc/soc:fp_fpc*        wakeup_enable     0200  system system
-/sys/devices/platform/soc/soc:fp_fpc*        hw_reset          0600  system system
-
 # Easel
 /dev/easelcomm-client     0666   cameraserver camera
 /dev/mnh_sm               0666   cameraserver camera

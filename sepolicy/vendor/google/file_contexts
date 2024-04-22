@@ -23,3 +23,4 @@
 
 /mnt/vendor/persist/battery(/.*)?                                           u:object_r:persist_battery_file:s0
 /vendor/bin/hw/android\.hardware\.power\.stats@1\.0-service\.pixel          u:object_r:hal_power_stats_default_exec:s0
+/vendor/bin/init\.fp\.sh u:object_r:init_fingerprint_exec:s0
