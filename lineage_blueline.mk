@@ -28,8 +28,8 @@ TARGET_SUPPORTS_QUICK_TAP := true
 TARGET_FACE_UNLOCK_SUPPORTED := true
 
 # Gapps
-WITH_GMS := true
-$(call inherit-product, vendor/gms/products/gms.mk)
+#WITH_GMS := true
+#$(call inherit-product, vendor/gms/products/gms.mk)
 TARGET_SUPPORTS_PIXEL_DEP := true
 
 PRODUCT_BUILD_PROP_OVERRIDES += \
