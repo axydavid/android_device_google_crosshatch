@@ -132,5 +132,9 @@ PRODUCT_PRODUCT_PROPERTIES += \
     ro.thermal_warmreset = true \
 
 # Enable zygote critical window.
-PRODUCT_PROPERTY_OVERRIDES += \
-    zygote.critical_window.minute=10
+#PRODUCT_PROPERTY_OVERRIDES += 
+#    zygote.critical_window.minute=10
+# vulkan
+PRODUCT_PRODUCT_PROPERTIES += \
+    ro.hwui.use_vulkan=true \
+    debug.renderengine.backend=skiaglthreaded
