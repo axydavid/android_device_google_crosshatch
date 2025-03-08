@@ -393,6 +393,9 @@ on early-boot
     write /sys/kernel/boot_adsp/boot 1
     write /sys/kernel/boot_cdsp/boot 1
 
+    # Update dm-verity state and set partition.*.verified properties
+    verity_update_state
+
     # Permission for rainbow sensor
     chown cameraserver camera /sys/devices/platform/soc/ac4a000.qcom,cci/ac4a000.qcom,cci:qcom,rainbow@20/rainbow_enable
     chmod 0660 /sys/devices/platform/soc/ac4a000.qcom,cci/ac4a000.qcom,cci:qcom,rainbow@20/rainbow_enable
@@ -576,6 +579,10 @@ on property:sys.boot_completed=1
     write /sys/block/sdf/queue/nr_requests 128
     write /sys/block/sdf/queue/iostats 1
 
+    # Block layer tuning: discard chunk size up to 128MB
+    # Otherwise, contiguous discards can be merged
+    write /sys/block/sda/queue/discard_max_bytes 134217728
+
     # QCOM FG SRAM dump for dumpstate
     chown system system /d/fg/sram/data
     chown system system /d/fg/sram/count
@@ -595,8 +602,8 @@ on property:sys.boot_completed=1
     # Disable sched_boost
     write /proc/sys/kernel/sched_boost 0
 
-    # Set the default mic gain to 12dB
-    write /sys/kernel/sound_control/mic_gain 12
+    # Set the default mic gain to 20dB
+    write /sys/kernel/sound_control/mic_gain 20
 
     # Enable PowerHAL hint processing
     setprop vendor.powerhal.init 1
@@ -722,9 +729,6 @@ service loc_launcher /vendor/bin/loc_launcher
     class late_start
     group gps inet diag wifi
 
-on property:persist.sys.xtra-daemon.enabled=*
-    restart loc_launcher
-
 service pd_mapper /vendor/bin/pd-mapper
      class core
 
@@ -733,7 +737,6 @@ service bugreport /system/bin/dumpstate -d -p -z
     class main
     disabled
     oneshot
-    keycodes 114 115 116
 
 service devstart_sh /vendor/bin/init.qcom.devstart.sh
     class main
@@ -840,8 +843,13 @@ service vendor.theme_set /vendor/bin/misc_writer --set-dark-theme
     disabled
     oneshot
 
-# Set dark boot flag when the device is provisioned.
-on property:persist.sys.device_provisioned=1
+# Clear the dark theme magic in /misc partition.
+service vendor.theme_clear /vendor/bin/misc_writer --clear-dark-theme
+    disabled
+    oneshot
+
+# Set the dark splash on init
+on init
     start vendor.theme_set
 
 on init && property:ro.boot.slot_successful=no

@@ -51,10 +51,10 @@ PRODUCT_PROPERTY_OVERRIDES += debug.stagefright.omx_default_rank=512
 PRODUCT_PROPERTY_OVERRIDES += vendor.audio.mic_break=true
 
 # Setting vendor SPL
-VENDOR_SECURITY_PATCH = 2021-10-05
+VENDOR_SECURITY_PATCH = $(PLATFORM_SECURITY_PATCH)
 
 # Set boot SPL
-BOOT_SECURITY_PATCH = 2021-10-05
+BOOT_SECURITY_PATCH = $(PLATFORM_SECURITY_PATCH)
 
 # MIDI feature
 PRODUCT_COPY_FILES += \
@@ -104,6 +104,10 @@ persist.bluetooth.a2dp_offload.cap=sbc-aac-aptx-aptxhd-ldac
 PRODUCT_COPY_FILES += \
     device/google/crosshatch/init.logging.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.$(PRODUCT_PLATFORM).logging.rc
 
+# Dumpstate HAL
+PRODUCT_PACKAGES += \
+    android.hardware.dumpstate@1.0-service.crosshatch
+
 # whitelisted app
 PRODUCT_COPY_FILES += \
     device/google/crosshatch/qti_whitelist.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/qti_whitelist.xml
@@ -134,6 +138,9 @@ AB_OTA_POSTINSTALL_CONFIG += \
 PRODUCT_PRODUCT_PROPERTIES += \
     ro.thermal_warmreset = true \
 
-# Enable zygote critical window.
-PRODUCT_PROPERTY_OVERRIDES += \
-    zygote.critical_window.minute=10
+# GMS
+WITH_GMS_FI := true
+
+# Parts
+PRODUCT_PACKAGES += \
+    GoogleParts

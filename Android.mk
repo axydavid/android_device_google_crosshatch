@@ -16,25 +16,38 @@
 
 LOCAL_PATH := $(call my-dir)
 
-$(eval $(call declare-copy-files-license-metadata,device/google/crosshatch,default-permissions.xml,SPDX-license-identifier-Apache-2.0,notice,build/soong/licenses/LICENSE,))
-$(eval $(call declare-copy-files-license-metadata,device/google/crosshatch,libnfc-nci.conf,SPDX-license-identifier-Apache-2.0,notice,build/soong/licenses/LICENSE,))
-$(eval $(call declare-copy-files-license-metadata,device/google/crosshatch,fstab.postinstall,SPDX-license-identifier-Apache-2.0,notice,build/soong/licenses/LICENSE,))
-$(eval $(call declare-copy-files-license-metadata,device/google/crosshatch,ueventd.rc,SPDX-license-identifier-Apache-2.0,notice,build/soong/licenses/LICENSE,))
-$(eval $(call declare-copy-files-license-metadata,device/google/crosshatch,wpa_supplicant.conf,SPDX-license-identifier-Apache-2.0,notice,build/soong/licenses/LICENSE,))
-$(eval $(call declare-copy-files-license-metadata,device/google/crosshatch,hals.conf,SPDX-license-identifier-Apache-2.0,notice,build/soong/licenses/LICENSE,))
-$(eval $(call declare-copy-files-license-metadata,device/google/crosshatch,media_profiles_V1_0.xml,SPDX-license-identifier-Apache-2.0,notice,build/soong/licenses/LICENSE,))
-$(eval $(call declare-copy-files-license-metadata,device/google/crosshatch,media_codecs_performance.xml,SPDX-license-identifier-Apache-2.0,notice,build/soong/licenses/LICENSE,))
-$(eval $(call declare-copy-files-license-metadata,device/google/crosshatch,device_state_configuration.xml,SPDX-license-identifier-Apache-2.0,notice,build/soong/licenses/LICENSE,))
-$(eval $(call declare-copy-files-license-metadata,device/google/crosshatch,task_profiles.json,SPDX-license-identifier-Apache-2.0,notice,build/soong/licenses/LICENSE,))
-$(eval $(call declare-copy-files-license-metadata,device/google/crosshatch,p2p_supplicant.conf,SPDX-license-identifier-Apache-2.0,notice,build/soong/licenses/LICENSE,))
-$(eval $(call declare-copy-files-license-metadata,device/google/crosshatch,wpa_supplicant.conf,SPDX-license-identifier-Apache-2.0,notice,build/soong/licenses/LICENSE,))
-$(eval $(call declare-copy-files-license-metadata,device/google/crosshatch,wpa_supplicant_overlay.conf,SPDX-license-identifier-Apache-2.0,notice,build/soong/licenses/LICENSE,))
-
-$(eval $(call declare-1p-copy-files,device/google/crosshatch,audio_policy_configuration.xml))
-
 ifeq ($(USES_DEVICE_GOOGLE_B1C1),true)
   subdir_makefiles=$(call first-makefiles-under,$(LOCAL_PATH))
   $(foreach mk,$(subdir_makefiles),$(info including $(mk) ...)$(eval include $(mk)))
+
+CNE_SYMLINK := $(TARGET_OUT)/etc/cne
+$(CNE_SYMLINK): $(LOCAL_INSTALLED_MODULE)
+	@echo "CNE directory link: $@"
+	@mkdir -p $(dir $@)
+	@rm -rf $@
+	$(hide) ln -sf /product/etc/cne $@
+
+ALL_DEFAULT_INSTALLED_MODULES += $(CNE_SYMLINK)
+
+IMS_LIBS := libimscamera_jni.so libimsmedia_jni.so
+IMS_SYMLINKS := $(addprefix $(TARGET_OUT)/app/ims/lib/arm64/,$(notdir $(IMS_LIBS)))
+$(IMS_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
+	@echo "IMS lib link: $@"
+	@mkdir -p $(dir $@)
+	@rm -rf $@
+	$(hide) ln -sf /system/lib64/$(notdir $@) $@
+
+ALL_DEFAULT_INSTALLED_MODULES += $(IMS_SYMLINKS)
+
+DM_LIBS := libdmengine.so libdmjavaplugin.so
+DM_SYMLINKS := $(addprefix $(TARGET_OUT_PRODUCT)/priv-app/DMService/lib/arm/,$(notdir $(DM_LIBS)))
+$(DM_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
+	@echo "DMService lib link: $@"
+	@mkdir -p $(dir $@)
+	@rm -rf $@
+	$(hide) ln -sf /product/lib/$(notdir $@) $@
+
+ALL_DEFAULT_INSTALLED_MODULES += $(DM_SYMLINKS)
 
 RFS_MSM_ADSP_SYMLINKS := $(TARGET_OUT_VENDOR)/rfs/msm/adsp/
 $(RFS_MSM_ADSP_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
@@ -83,22 +96,6 @@ $(RFS_MSM_SLPI_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
 	$(hide) ln -sf /vendor/firmware_mnt $@/readonly/firmware
 	$(hide) ln -sf /vendor/firmware $@/readonly/vendor/firmware
 
-IMS_LIBS := libimscamera_jni.so libimsmedia_jni.so
-IMS_SYMLINKS := $(addprefix $(TARGET_OUT)/app/ims/lib/arm64/,$(notdir $(IMS_LIBS)))
-$(IMS_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
-	@echo "IMS lib link: $@"
-	@mkdir -p $(dir $@)
-	@rm -rf $@
-	$(hide) ln -sf /system/lib64/$(notdir $@) $@
-
-DM_LIBS := libdmengine.so libdmjavaplugin.so
-DM_SYMLINKS := $(addprefix $(TARGET_OUT_PRODUCT)/priv-app/DMService/lib/arm/,$(notdir $(DM_LIBS)))
-$(DM_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
-	@echo "DMService lib link: $@"
-	@mkdir -p $(dir $@)
-	@rm -rf $@
-	$(hide) ln -sf /product/lib/$(notdir $@) $@
-
-ALL_DEFAULT_INSTALLED_MODULES += $(RFS_MSM_ADSP_SYMLINKS) $(RFS_MSM_CDSP_SYMLINKS) $(RFS_MSM_MPSS_SYMLINKS) $(RFS_MSM_SLPI_SYMLINKS) $(IMS_SYMLINKS) $(DM_SYMLINKS)
+ALL_DEFAULT_INSTALLED_MODULES += $(RFS_MSM_ADSP_SYMLINKS) $(RFS_MSM_CDSP_SYMLINKS) $(RFS_MSM_MPSS_SYMLINKS) $(RFS_MSM_SLPI_SYMLINKS)
 
 endif

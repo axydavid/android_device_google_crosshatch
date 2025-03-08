@@ -1,11 +1,5 @@
 LOCAL_PATH := $(call my-dir)
 
-$(call declare-license-metadata,$(LOCAL_PATH)/vendor.img,legacy_proprietary,proprietary,$(LOCAL_PATH)/../LICENSE,"Vendor Image",vendor)
-
-$(eval $(call declare-copy-files-license-metadata,vendor/qcom/blueline,:qcom,legacy_proprietary,proprietary,vendor/qcom/sargo/LICENSE,))
-$(eval $(call declare-copy-files-license-metadata,vendor/qcom/blueline,.jar,legacy_proprietary,proprietary,vendor/qcom/sargo/LICENSE,))
-$(eval $(call declare-copy-files-license-metadata,vendor/qcom/blueline,.xml,legacy_proprietary,proprietary,vendor/qcom/sargo/LICENSE,))
-
 ifneq ($(filter blueline, $(TARGET_DEVICE)),)
 include $(CLEAR_VARS)
 LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)

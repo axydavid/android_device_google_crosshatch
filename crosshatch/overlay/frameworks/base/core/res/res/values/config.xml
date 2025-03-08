@@ -732,12 +732,10 @@
     <!-- Height of the status bar.
          Do not read this dimen directly. Use {@link SystemBarUtils#getStatusBarHeight} instead.
          -->
-    <dimen name="status_bar_height_default">28dp</dimen>
-    <dimen name="status_bar_height_portrait">171px</dimen>
-    <dimen name="status_bar_height_landscape">28dp</dimen>
+    <dimen name="status_bar_height">171px</dimen>
 
     <dimen name="rounded_corner_radius_top">133px</dimen>
-    <dimen name="rounded_corner_radius_bottom">75px</dimen>
+    <dimen name="rounded_corner_radius_bottom">70px</dimen>
 
     <!-- How much we expand the touchable region of the status bar below the notch to catch touches
         that just start below the notch. -->

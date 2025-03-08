@@ -13,9 +13,10 @@
 # limitations under the License.
 
 ifneq ($(filter blueline,$(TARGET_DEVICE)),)
--include vendor/google_devices/blueline/BoardConfigPartial.mk
--include vendor/qcom/blueline/BoardConfigPartial.mk
+LOCAL_STEM := blueline/BoardConfigPartial.mk
 else
--include vendor/google_devices/crosshatch/BoardConfigPartial.mk
--include vendor/qcom/crosshatch/BoardConfigPartial.mk
+LOCAL_STEM := crosshatch/BoardConfigPartial.mk
 endif
+
+-include vendor/google_devices/$(LOCAL_STEM)
+-include vendor/qcom/$(LOCAL_STEM)

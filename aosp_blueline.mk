@@ -61,5 +61,9 @@ endif
 PRODUCT_MANUFACTURER := Google
 PRODUCT_NAME := aosp_blueline
 PRODUCT_DEVICE := blueline
-PRODUCT_BRAND := Android
-PRODUCT_MODEL := AOSP on blueline
+PRODUCT_BRAND := google
+PRODUCT_MODEL := Pixel 3
+
+LOCAL_PATH := device/google/crosshatch
+
+TARGET_SYSTEM_PROP := $(LOCAL_PATH)/blueline.prop
