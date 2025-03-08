@@ -23,7 +23,10 @@ PRODUCT_SOONG_NAMESPACES += \
     hardware/qcom/sdm845 \
     vendor/google/camera \
     vendor/qcom/sdm845 \
-    vendor/google/interfaces
+    vendor/google/interfaces \
+    vendor/google_devices/common/proprietary/confirmatioui_hal \
+    vendor/google_nos/host/android \
+    vendor/google_nos/test/system-test-harness
 
 PRODUCT_PROPERTY_OVERRIDES += \
     keyguard.no_require_sim=true
@@ -38,31 +41,23 @@ PRODUCT_PRODUCT_PROPERTIES += \
     masterclear.allow_retain_esim_profiles_after_fdr=true
 
 PRODUCT_COPY_FILES += \
+    device/google/crosshatch/default-permissions.xml:$(TARGET_COPY_OUT_VENDOR)/etc/default-permissions/default-permissions.xml \
     device/google/crosshatch/component-overrides.xml:$(TARGET_COPY_OUT_VENDOR)/etc/sysconfig/component-overrides.xml \
     frameworks/native/data/etc/handheld_core_hardware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/handheld_core_hardware.xml \
     frameworks/native/data/etc/android.software.verified_boot.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.verified_boot.xml
 
-# Privapp-permissions whitelist
+# Enforce privapp-permissions whitelist
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.control_privapp_permissions=log
-
-# EuiccGoogle privapp-permissions
-PRODUCT_COPY_FILES += \
-    device/google/crosshatch/permissions/extra-privapp-permissions.xml:$(TARGET_COPY_OUT_VENDOR)/etc/default-permissions/extra-privapp-permissions.xml \
-
-# Adaptive charging
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/adaptivecharging.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/sysconfig/adaptivecharging.xml
+    ro.control_privapp_permissions?=enforce
 
 # Enable on-access verification of priv apps. This requires fs-verity support in kernel.
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.apk_verity.mode=1
 
 PRODUCT_PACKAGES += \
-    messaging \
-    netutils-wrapper-1.0
+    messaging
 
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
+ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
 PRODUCT_PACKAGES += chre_test_client
 endif
 
@@ -75,17 +70,7 @@ TARGET_PRODUCT_PROP := $(LOCAL_PATH)/product.prop
 $(call inherit-product, $(LOCAL_PATH)/utils.mk)
 
 # Installs gsi keys into ramdisk, to boot a developer GSI with verified boot.
-#$(call inherit-product, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
-
-#ifeq ($(wildcard vendor/google_devices/crosshatch/proprietary/device-vendor-crosshatch.mk),)
-#    BUILD_WITHOUT_VENDOR := true
-#endif
-
-#ifeq ($(TARGET_PREBUILT_KERNEL),)
-#    LOCAL_KERNEL := device/google/crosshatch-kernel/Image.lz4
-#else
-#    LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
-#endif
+$(call inherit-product, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
 
 PRODUCT_CHARACTERISTICS := nosdcard
 PRODUCT_SHIPPING_API_LEVEL := 28
@@ -127,7 +112,7 @@ else
     $(LOCAL_PATH)/init.hardware.xr.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.$(PRODUCT_PLATFORM).rc
 endif
 
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
+ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
   PRODUCT_COPY_FILES += \
       $(LOCAL_PATH)/init.hardware.diag.rc.userdebug:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.$(PRODUCT_PLATFORM).diag.rc
   PRODUCT_COPY_FILES += \
@@ -338,10 +323,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
     vendor.rild.libpath=/vendor/lib64/libril-qc-hal-qmi.so \
     ro.hardware.keystore_desede=true \
 
-# Native video calling
-PRODUCT_PROPERTY_OVERRIDES += \
-    persist.dbg.vt_avail_ovr=1
-
 # Disable snapshot timer
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.radio.snapshot_enabled=0 \
@@ -364,15 +345,6 @@ PRODUCT_PACKAGES += \
     gralloc.sdm845 \
     android.hardware.graphics.mapper@2.0-impl-qti-display \
     vendor.qti.hardware.display.allocator@1.0-service
-    
-PRODUCT_PACKAGES += \
-    android.hardware.radio.config@1.1.vendor:64 \
-    android.hardware.radio.deprecated@1.0.vendor:64 \
-    android.hardware.radio@1.3.vendor:64 \
-    android.hardware.authsecret@1.0.vendor:64 \
-    android.system.net.netd@1.1.vendor:64 \
-    android.hardware.weaver@1.0.vendor:64 \
-    android.hardware.neuralnetworks@1.3.vendor:64
 
 # RenderScript HAL
 PRODUCT_PACKAGES += \
@@ -390,7 +362,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     lights.qcom \
     hardware.google.light@1.0-service
-
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.hardware.lights=qcom
 
@@ -403,7 +374,6 @@ PRODUCT_PACKAGES += \
 
 # Bluetooth HAL
 PRODUCT_PACKAGES += \
-    android.hardware.bluetooth@1.0.vendor \
     android.hardware.bluetooth@1.0-impl-qti \
     android.hardware.bluetooth@1.0-service-qti
 
@@ -426,29 +396,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # DRM HAL
 PRODUCT_PACKAGES += \
-    android.hardware.drm@1.4.vendor:64 \
     android.hardware.drm@1.0-impl \
     android.hardware.drm@1.0-service \
     android.hardware.drm@1.4-service.clearkey \
     android.hardware.drm@1.3-service.widevine
-    
-# Gatekeeper HAL
-PRODUCT_PACKAGES += \
-    android.hardware.gatekeeper@1.0.vendor \
-    
-# OEMLock
-PRODUCT_PACKAGES += \
-    android.hardware.oemlock@1.0.vendor:64
-
-# Sensors
-PRODUCT_PACKAGES += \
-    android.hardware.sensors@2.0.vendor \
-    android.frameworks.sensorservice@1.0.vendor
-
-# Sensors
-PRODUCT_PACKAGES += \
-    android.hardware.keymaster@3.0.vendor \
-    android.hardware.keymaster@4.0.vendor
 
 # NFC and Secure Element packages
 PRODUCT_PACKAGES += \
@@ -485,22 +436,9 @@ PRODUCT_PACKAGES += \
     libOmxCore \
     libstagefrighthw \
     libOmxVdec \
+    libOmxVdecHevc \
     libOmxVenc \
     libc2dcolorconvert
-
-# NOS
-PRODUCT_PACKAGES += \
-    libnos:64 \
-    libnos_client_citadel:64 \
-    libnosprotos:64 \
-    nos_app_avb:64 \
-    nos_app_keymaster:64 \
-    nos_app_weaver:64
-
-# Codec2
-PRODUCT_PACKAGES += \
-    libcodec2_vndk.vendor \
-    libcodec2_hidl@1.0.vendor:32
 
 # Enable Codec 2.0
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -531,12 +469,17 @@ PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-service_64 \
     camera.device@3.2-impl \
     camera.sdm845 \
+    libqomx_core \
+    libmmjpeg_interface \
+    libmmcamera_interface \
     libcameradepthcalibrator
 
 # Google Camera HAL test libraries in debug builds
+ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
 PRODUCT_PACKAGES_DEBUG += \
     libgoogle_camera_hal_proprietary_tests \
     libgoogle_camera_hal_tests
+endif
 
 PRODUCT_PACKAGES += \
     sensors.$(PRODUCT_HARDWARE) \
@@ -560,7 +503,7 @@ PRODUCT_PACKAGES += \
     android.hardware.contexthub@1.2-service.generic
 
 # CHRE tools
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
+ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
 PRODUCT_PACKAGES += \
     chre_power_test_client \
     chre_test_client
@@ -589,7 +532,7 @@ PRODUCT_COPY_FILES += \
 
 
 HOSTAPD := hostapd
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
+ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
 HOSTAPD += hostapd_cli
 endif
 PRODUCT_PACKAGES += $(HOSTAPD)
@@ -599,16 +542,12 @@ WPA += wpa_supplicant_wcn.conf
 WPA += wpa_supplicant
 PRODUCT_PACKAGES += $(WPA)
 
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
+ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
 PRODUCT_PACKAGES += wpa_cli
 endif
 
 # Wifi
 PRODUCT_PACKAGES += \
-    android.hardware.wifi@1.5.vendor:64 \
-    libwifi-hal-ctrl \
-    libwifi-hal-qcom \
-    libwifi-hal \
     wificond \
     libwpa_client \
     WifiOverlay
@@ -644,7 +583,7 @@ PRODUCT_PACKAGES += \
     android.hardware.bluetooth.audio@2.0-impl \
     android.hardware.audio.service
 
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
+ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
 PRODUCT_PACKAGES += \
     tinyplay \
     tinycap \
@@ -692,25 +631,25 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/seccomp_policy/mediacodec.policy:$(TARGET_COPY_OUT_VENDOR)/etc/seccomp_policy/mediacodec.policy
 
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
+ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
 # Subsystem ramdump
 PRODUCT_PROPERTY_OVERRIDES += \
-    persist.vendor.sys.ssr.enable_ramdumps=0
+    persist.vendor.sys.ssr.enable_ramdumps=1
 endif
 
 # Subsystem silent restart
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.sys.ssr.restart_level=modem,slpi,adsp
 
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
+ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
 # Sensor debug flag
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.debug.ash.logger=0 \
     persist.vendor.debug.ash.logger.time=0
 endif
 
-# Setup Dalvik VM configurations
-# $(call inherit-product, vendor/pixeldust/configs/phone-xhdpi-4096-dalvik-heap.mk)
+# setup dalvik vm configs
+$(call inherit-product, frameworks/native/build/phone-xhdpi-4096-dalvik-heap.mk)
 
 ifneq ($(filter %_mainline,$(TARGET_PRODUCT)),)
 PRODUCT_COPY_FILES += \
@@ -729,7 +668,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     charger_res_images
 
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
+ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
 # b/36703476: Set default log size to 1M
 PRODUCT_PROPERTY_OVERRIDES += \
   ro.logd.size=1M
@@ -746,6 +685,9 @@ PRODUCT_PACKAGES += \
 # Storage: for factory reset protection feature
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.frp.pst=/dev/block/bootdevice/by-name/frp
+
+PRODUCT_PACKAGES += \
+    vndk-sp
 
 # Override heap growth limit due to high display density on device
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -773,8 +715,6 @@ PRODUCT_COPY_FILES += \
 
 # Fingerprint
 PRODUCT_PACKAGES += \
-    android.frameworks.stats@1.0.vendor:64 \
-    android.hardware.biometrics.fingerprint@2.2.vendor:64 \
     android.hardware.biometrics.fingerprint@2.1-service.fpc
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/init.fingerprint.sh:$(TARGET_COPY_OUT_VENDOR)/bin/init.fingerprint.sh \
@@ -822,7 +762,7 @@ PRODUCT_COPY_FILES += \
      device/google/crosshatch/acdbdata/adsp_avs_config.acdb:$(TARGET_COPY_OUT_VENDOR)/etc/acdbdata/adsp_avs_config.acdb
 
 # Audio ACDB workspace files for QACT
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
+ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
 PRODUCT_COPY_FILES += \
      device/google/crosshatch/acdbdata/OEM/sdm845-tavil-snd-card/workspaceFile.qwsp:$(TARGET_COPY_OUT_VENDOR)/etc/acdbdata/OEM/sdm845-tavil-snd-card/workspaceFile.qwsp \
      device/google/crosshatch/acdbdata/OEM/sdm845-tavil-b1-snd-card/workspaceFile.qwsp:$(TARGET_COPY_OUT_VENDOR)/etc/acdbdata/OEM/sdm845-tavil-b1-snd-card/workspaceFile.qwsp \
@@ -838,7 +778,8 @@ PRODUCT_COPY_FILES += \
 
 # Keymaster configuration
 PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.software.device_id_attestation.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.device_id_attestation.xml
+    frameworks/native/data/etc/android.software.device_id_attestation.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.device_id_attestation.xml \
+     frameworks/native/data/etc/android.hardware.device_unique_attestation.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.device_unique_attestation.xml
 
 # Enable modem logging
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -846,7 +787,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.radio.log_prefix="modem_log_"
 
 # Enable modem logging for debug
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
+ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.sys.modem.diag.mdlog=true
 else
@@ -856,8 +797,8 @@ endif
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.sys.modem.diag.mdlog_br_num=5
 
-# Enable tcpdump_logger on userdebug and eng
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
+# Enable tcpdump_logger on eng
+ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
     PRODUCT_PROPERTY_OVERRIDES += \
         persist.vendor.tcpdump.log.alwayson=false \
         persist.vendor.tcpdump.log.br_num=5
@@ -865,7 +806,7 @@ endif
 
 # Preopt SystemUI
 PRODUCT_DEXPREOPT_SPEED_APPS += \
-    SystemUI
+    SystemUIGoogle
 
 # Enable stats logging in LMKD
 TARGET_LMKD_STATS_LOG := true
@@ -873,7 +814,7 @@ PRODUCT_PRODUCT_PROPERTIES += \
     ro.lmk.log_stats=true
 
 # default usb oem functions
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
+ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
   PRODUCT_PROPERTY_OVERRIDES += \
       persist.vendor.usb.usbradio.config=diag
 endif
@@ -898,7 +839,7 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
 
 # Increment the SVN for any official public releases
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.vendor.build.svn=62
+    ro.vendor.build.svn=64
 
 # pixel atrace HAL
 PRODUCT_PACKAGES += \
@@ -932,54 +873,8 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += ro.surface_flinger.has_HDR_display=true
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += ro.surface_flinger.use_color_management=true
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += ro.surface_flinger.protected_contents=true
 
-PRODUCT_PACKAGES += \
-    libdisplayconfig \
-    vendor.display.config@1.0 \
-    vendor.display.config@1.8 \
-    vendor.display.config@1.0.vendor \
-    vendor.display.config@1.3.vendor
-
-# APEX
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.apex.updatable=true
-
-# DRM
-PRODUCT_PROPERTY_OVERRIDES += \
-    drm.service.enabled=true \
-    media.mediadrmservice.enable=true
-
-# h!os
-PRODUCT_HOST_PACKAGES += brotli
-
-# Google Assistant
-PRODUCT_PRODUCT_PROPERTIES += ro.opa.eligible_device=true
-
-# IPA config
-PRODUCT_PACKAGES += \
-    IPACM_cfg.xml
-
-# Utilities
-PRODUCT_PACKAGES += \
-    libjson \
-    libtinyxml \
-    libsdsprpc
-
-# Camera Extensions
-PRODUCT_PRODUCT_PROPERTIES += \
-    ro.vendor.camera.extensions.package=com.google.android.apps.camera.services \
-    ro.vendor.camera.extensions.service=com.google.android.apps.camera.services.extensions.service.PixelExtensions
-
-# Context Hub Runtime Environment
-PRODUCT_PACKAGES += \
-    chre
-
-# To be removed?
-PRODUCT_PACKAGES += \
-    libhwbinder.vendor \
-    libhidltransport.vendor
-
 # Vendor verbose logging default property
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
+ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.verbose_logging_enabled=true
 else
@@ -987,12 +882,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.verbose_logging_enabled=false
 endif
 
-PRODUCT_PACKAGES += \
-    charger_res_images \
-    product_charger_res_images
-
 # Pixel Logger
 include hardware/google/pixel/PixelLogger/PixelLogger.mk
+
 include hardware/google/pixel/pixelstats/device.mk
 include hardware/google/pixel/mm/device_legacy.mk
 include hardware/google/pixel/thermal/device.mk
@@ -1002,20 +894,6 @@ include hardware/google/pixel/citadel/citadel.mk
 
 # power HAL
 -include hardware/google/pixel/power-libperfmgr/aidl/device.mk
-
-# EUICC
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.telephony.euicc.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/android.hardware.telephony.euicc.xml
-
-# RCS
-PRODUCT_PACKAGES += \
-    com.android.ims.rcsmanager \
-    PresencePolling \
-    RcsService
-
-# Force triple frame buffers
-PRODUCT_PRODUCT_PROPERTIES += \
-    ro.surface_flinger.max_frame_buffer_acquired_buffers=3
 
 # Set support one-handed mode
 PRODUCT_PRODUCT_PROPERTIES += \
@@ -1028,6 +906,3 @@ PRODUCT_PRODUCT_PROPERTIES += \
 # Set system properties identifying the chipset
 PRODUCT_VENDOR_PROPERTIES += ro.soc.manufacturer=Qualcomm
 PRODUCT_VENDOR_PROPERTIES += ro.soc.model=SDM845
-
-# VNDK
-$(foreach target, $(shell cat $(LOCAL_PATH)/vndk.txt), $(eval PRODUCT_PACKAGES += $(target).vendor))

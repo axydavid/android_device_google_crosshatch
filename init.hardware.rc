@@ -602,9 +602,6 @@ on property:sys.boot_completed=1
     # Disable sched_boost
     write /proc/sys/kernel/sched_boost 0
 
-    # Set the default mic gain to 20dB
-    write /sys/kernel/sound_control/mic_gain 20
-
     # Enable PowerHAL hint processing
     setprop vendor.powerhal.init 1
 
@@ -737,6 +734,7 @@ service bugreport /system/bin/dumpstate -d -p -z
     class main
     disabled
     oneshot
+    keycodes 114 115 116
 
 service devstart_sh /vendor/bin/init.qcom.devstart.sh
     class main
@@ -764,7 +762,7 @@ service msm_irqbalance /vendor/bin/msm_irqbalance -f /vendor/etc/msm_irqbalance.
     class core
     user root
     group root
-    task_profiles ServiceCapacityLow
+    writepid /dev/cpuset/system-background/tasks
 
 service ppd /vendor/bin/mm-pp-dpps
     class late_start
@@ -843,13 +841,8 @@ service vendor.theme_set /vendor/bin/misc_writer --set-dark-theme
     disabled
     oneshot
 
-# Clear the dark theme magic in /misc partition.
-service vendor.theme_clear /vendor/bin/misc_writer --clear-dark-theme
-    disabled
-    oneshot
-
-# Set the dark splash on init
-on init
+# Set dark boot flag when the device is provisioned.
+on property:persist.sys.device_provisioned=1
     start vendor.theme_set
 
 on init && property:ro.boot.slot_successful=no

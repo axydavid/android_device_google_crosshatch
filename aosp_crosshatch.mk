@@ -64,9 +64,5 @@ endif
 PRODUCT_MANUFACTURER := Google
 PRODUCT_NAME := aosp_crosshatch
 PRODUCT_DEVICE := crosshatch
-PRODUCT_BRAND := google
-PRODUCT_MODEL := Pixel 3 XL
-
-LOCAL_PATH := device/google/crosshatch
-
-TARGET_SYSTEM_PROP := $(LOCAL_PATH)/crosshatch.prop
+PRODUCT_BRAND := Android
+PRODUCT_MODEL := AOSP on crosshatch

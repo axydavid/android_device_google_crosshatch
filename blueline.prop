@@ -1,7 +1,0 @@
-# Pixel identification
-ro.build.fingerprint=google/blueline/blueline:12/SP1A.210812.015/7679548:user/release-keys
-ro.product.manufacturer=Google
-ro.product.device=blueline
-ro.product.brand=google
-ro.product.name=blueline
-ro.product.model=Pixel 3

@@ -51,10 +51,10 @@ PRODUCT_PROPERTY_OVERRIDES += debug.stagefright.omx_default_rank=512
 PRODUCT_PROPERTY_OVERRIDES += vendor.audio.mic_break=true
 
 # Setting vendor SPL
-VENDOR_SECURITY_PATCH = $(PLATFORM_SECURITY_PATCH)
+VENDOR_SECURITY_PATCH = 2021-10-05
 
 # Set boot SPL
-BOOT_SECURITY_PATCH = $(PLATFORM_SECURITY_PATCH)
+BOOT_SECURITY_PATCH = 2021-10-05
 
 # MIDI feature
 PRODUCT_COPY_FILES += \
@@ -137,10 +137,3 @@ AB_OTA_POSTINSTALL_CONFIG += \
 # Set thermal warm reset
 PRODUCT_PRODUCT_PROPERTIES += \
     ro.thermal_warmreset = true \
-
-# GMS
-WITH_GMS_FI := true
-
-# Parts
-PRODUCT_PACKAGES += \
-    GoogleParts
